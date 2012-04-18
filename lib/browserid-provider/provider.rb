@@ -26,14 +26,23 @@ module BrowserID
       # Return Not found or send call back to middleware stack unless the URL is captured here
       return (@app ? @app.call(env) : not_found) unless @config.urls.include? @path
 
-      debugger
-
-      [200, {"Content-Type" => "text/html"}, ["Hellow from BrowserID"]]
+      case @path
+        when config.whoami_path do
+          current_user = eval config.whoami
+          [
+            200,
+            {"Content-Type" => "text/html"},
+            [{ user: current_user ? current_user.email.sub(/@.*/,'') : nil }.to_json]
+          ]
+        end
+        else not_found
+      end
     end
 
     private
 
     def not_found
+          debugger
       template = ERB.new File.read("vendor/browserid/templates/404.html.erb")
       [404, {"Content-Type" => "text/html"}, template.result]
     end

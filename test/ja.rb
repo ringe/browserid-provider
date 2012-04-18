@@ -2,6 +2,7 @@ require "test/unit"
 require "json"
 require "rack"
 require "rack/test"
+require "mocha"
 require "browserid-provider"
 require "ruby-debug"
 require "thin"
@@ -19,10 +20,12 @@ class MyTest < Test::Unit::TestCase
   end
 
   def test_get_well_known_browserid
+
     get "/.well-known/browserid"
     if last_response.content_type != "application/json"
       raise "Content type of /.well-known/browserid was #{last_response.content_type} but must be application/json"
     else
+      puts last_response.body
       json = JSON.parse(last_response.body)
     end
   end

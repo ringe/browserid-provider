@@ -9,13 +9,17 @@ module BrowserID
     def initialize(options = {})
       @config = BrowserID::Config.new(options)
 
-      if File.exists?(@config.private_key_path)
-        File.open(@config.private_key_path) {|f| @privkey = OpenSSL::PKey::RSA.new(f.read) }
+      keypath = @config.private_key_path
+
+      if File.exists?(keypath)
+        File.open(keypath) {|f| @privkey = OpenSSL::PKey::RSA.new(f.read) }
         @pubkey = @privkey.public_key
       else
+        require 'fileutils'
+        FileUtils.mkdir_p keypath.sub(File.basename(keypath),'')
         @privkey = OpenSSL::PKey::RSA.new(2048)
         @pubkey = @privkey.public_key
-        File.open(@config.private_key_path, "w") {|f| f.write(@privkey) }
+        File.open(keypath, "w") {|f| f.write(@privkey) }
       end
     end
 

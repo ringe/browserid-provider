@@ -6,6 +6,7 @@ require "mocha"
 require "browserid-provider"
 require "ruby-debug"
 require "thin"
+require "warden"
 
 class MyTest < Test::Unit::TestCase
   include Rack::Test::Methods
@@ -20,14 +21,20 @@ class MyTest < Test::Unit::TestCase
   end
 
   def test_get_well_known_browserid
-
     get "/.well-known/browserid"
-    if last_response.content_type != "application/json"
-      raise "Content type of /.well-known/browserid was #{last_response.content_type} but must be application/json"
-    else
-      puts last_response.body
-      json = JSON.parse(last_response.body)
-    end
+
+    assert last_response.content_type == "application/json", "Content type was #{last_response.content_type} but must be application/json"
+
+    json = JSON.parse(last_response.body)
+    assert json.keys == ["public-key", "authentication", "provisioning"], "Malformed JSON response, see https://eyedee.me/.well-known/browserid for example data"
+
+    assert json["public-key"].keys == ["algorithm","n","e"], "Invalid public key provided, see https://wiki.mozilla.org/Identity/BrowserID"
+  end
+
+  def test_get_whoami
+    BrowserID::Provider.current_user.stub(:email => "a@b.com")
+    get BrowserID::Config.new.whoami_path
+    assert last_response.ok?
   end
 end
 

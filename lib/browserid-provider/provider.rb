@@ -27,7 +27,6 @@ module BrowserID
         when "/.well-known/browserid"
           [ 200, {"Content-Type" => "application/json"}, [BrowserID::Identity.new.to_json] ]
         when config.whoami_path
-          current_user = eval config.whoami
           [
             200,
             {"Content-Type" => "text/html"},
@@ -43,5 +42,8 @@ module BrowserID
       [404, {"Content-Type" => "text/html"}, BrowserID::Template.render("404")]
     end
 
+    def current_user
+      eval config.whoami
+    end
   end
 end

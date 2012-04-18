@@ -2,8 +2,6 @@ require "openssl"
 
 module BrowserID
   class Identity
-    attr_accessor :pubkey, :privkey, :browserid_url
-
     # == Options ==
     # :key_path     where to store the OpenSSL private key
     def initialize(options = {})
@@ -27,12 +25,21 @@ module BrowserID
       @privkey
     end
 
+    # Return BrowserID Identity JSON
     def to_json
       {
-        "public-key" => { "algorithm"=> "RS", "n" => @pubkey.n.to_s, "e" => @pubkey.e.to_s },
-        "authentication" => "/sign_in",
-        "provisioning" => "/provision"
+        "public-key" => { "algorithm"=> "RS", "n" => public_key.n.to_s, "e" => public_key.e.to_s },
+        "authentication" => authentication_path,
+        "provisioning" => provision_path
       }.to_json
+    end
+
+    def authentication_path
+      "/users/sign_in"
+    end
+
+    def provision_path
+      "/provision"
     end
   end
 end

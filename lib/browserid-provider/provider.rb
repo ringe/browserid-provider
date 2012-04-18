@@ -1,3 +1,5 @@
+require 'erb'
+
 module BrowserID
   module Provider
 
@@ -12,7 +14,7 @@ module BrowserID
     #  GET  /provision
     #  POST /certify
     class App
-      def initialize(app, options = {})
+      def initialize(app = nil, options = {})
         @urls = ["/.well-known/browserid", "/whoami", "/provision", "/certify"]
 
         @app = app
@@ -22,8 +24,21 @@ module BrowserID
 
       # Rack enabled!
       def call(env)
-        return @app.call(env) unless @urls.include? env["PATH_INFO"]
-        "Hellow from BrowserID"
+        @path = env["PATH_INFO"]
+
+        # Return Not found or send call back to middleware stack unless the URL is captured here
+        return (@app ? @app.call(env) : not_found) unless @urls.include? @path
+
+        debugger
+
+        [200, {"Content-Type" => "text/html"}, ["Hellow from BrowserID"]]
+      end
+
+      private
+
+      def not_found
+        template = ERB.new File.read("vendor/browserid/templates/404.html.erb")
+        [404, {"Content-Type" => "text/html"}, template.result]
       end
 
     end

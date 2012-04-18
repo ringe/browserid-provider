@@ -8,8 +8,8 @@ Gem::Specification.new do |s|
   s.authors     = ["ringe"]
   s.email       = ["runar@rin.no"]
   s.homepage    = "https://github.com/ringe/browserid-provider"
-  s.summary     = %q{TODO: Write a gem summary}
-  s.description = %q{TODO: Write a gem description}
+  s.summary     = %q{Rack-based Mozilla BrowserID Provider}
+  s.description = %q{With the BrowserID provider you enable your users to authenticate themselves across the web using a single authority.}
 
   s.files         = `git ls-files`.split("\n")
   s.test_files    = `git ls-files -- {test,spec,features}/*`.split("\n")

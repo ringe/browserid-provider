@@ -4,7 +4,7 @@ require "browserid-provider/version"
 
 Gem::Specification.new do |s|
   s.name        = "browserid-provider"
-  s.version     = BrowserID::Provider::VERSION
+  s.version     = BrowserID::VERSION
   s.authors     = ["ringe"]
   s.email       = ["runar@rin.no"]
   s.homepage    = "https://github.com/ringe/browserid-provider"

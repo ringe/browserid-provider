@@ -43,7 +43,7 @@ module BrowserID
 
     def not_found
           debugger
-      template = ERB.new File.read("vendor/browserid/templates/404.html.erb")
+      template = ERB.new File.read("../../vendor/browserid/templates/404.html.erb")
       [404, {"Content-Type" => "text/html"}, template.result]
     end
 

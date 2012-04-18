@@ -1,7 +1,4 @@
-require 'erb'
-
 module BrowserID
-
   # The BrowserID Provider Rack App
 #match ".well-known/:action" => 'verified_emails'
 #get "provision(/:email(/:duration))" => 'verified_emails#provision'
@@ -27,14 +24,15 @@ module BrowserID
       return (@app ? @app.call(env) : not_found) unless @config.urls.include? @path
 
       case @path
-        when config.whoami_path do
+        when "/.well-known/browserid"
+          [ 200, {"Content-Type" => "application/json"}, [BrowserID::Identity.new.to_json] ]
+        when config.whoami_path
           current_user = eval config.whoami
           [
             200,
             {"Content-Type" => "text/html"},
             [{ user: current_user ? current_user.email.sub(/@.*/,'') : nil }.to_json]
           ]
-        end
         else not_found
       end
     end
@@ -42,9 +40,7 @@ module BrowserID
     private
 
     def not_found
-          debugger
-      template = ERB.new File.read("../../vendor/browserid/templates/404.html.erb")
-      [404, {"Content-Type" => "text/html"}, template.result]
+      [404, {"Content-Type" => "text/html"}, BrowserID::Template.render("404")]
     end
 
   end

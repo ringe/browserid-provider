@@ -2,18 +2,20 @@ require "openssl"
 
 module BrowserID
   class Identity
+    attr_accessor :config
+
     # == Options ==
     # :key_path     where to store the OpenSSL private key
     def initialize(options = {})
-      options[:key_path] ||= "config/browserid_provider.pem"
+      @config = BrowserID::Config.new(options)
 
-      if File.exists?(options[:key_path])
-        File.open(options[:key_path]) {|f| @privkey = OpenSSL::PKey::RSA.new(f.read) }
+      if File.exists?(@config.private_key_path)
+        File.open(@config.private_key_path) {|f| @privkey = OpenSSL::PKey::RSA.new(f.read) }
         @pubkey = @privkey.public_key
       else
         @privkey = OpenSSL::PKey::RSA.new(2048)
         @pubkey = @privkey.public_key
-        File.open(key_path, "w") {|f| f.write(@privkey) }
+        File.open(@config.private_key_path, "w") {|f| f.write(@privkey) }
       end
     end
 

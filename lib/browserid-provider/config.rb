@@ -15,8 +15,8 @@ module BrowserID
   #
   # private_key_path          Where is the BrowserID OpenSSL private key located
   #                           defaults to: "config/browserid_provider.pem"
-  #
   # The "/.well-known/browserid" path is required from the BrowserID spec and used here.
+  #
   class Config < Hash
     # Creates an accessor that simply sets and reads a key in the hash:
     #

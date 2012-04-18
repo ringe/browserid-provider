@@ -1,4 +1,5 @@
 require "test/unit"
+require "json"
 require "rack"
 require "rack/test"
 require "browserid-provider"
@@ -9,19 +10,22 @@ class MyTest < Test::Unit::TestCase
   include Rack::Test::Methods
 
   def app
-    BrowserID::Provider::App.new
+    BrowserID::Provider.new
   end
 
   def test_get_root
-#    authorize "bryan", "secret"
     get "/"
-    puts last_response.data
-#    follow_redirect!
-#
-#    assert_equal "http://example.org/redirected", last_request.url
-    assert last_response.ok?
+    assert last_response.status == 404, "BrowserID Provider should not respond to root"
   end
 
+  def test_get_well_known_browserid
+    get "/.well-known/browserid"
+    if last_response.content_type != "application/json"
+      raise "Content type of /.well-known/browserid was #{last_response.content_type} but must be application/json"
+    else
+      json = JSON.parse(last_response.body)
+    end
+  end
 end
 
-Rack::Handler::Thin.run BrowserID::Provider::App.new, :Port => 3000
+#Rack::Handler::Thin.run BrowserID::Provider.new, :Port => 3000

@@ -27,6 +27,7 @@ module BrowserID
         when "/.well-known/browserid"
           [ 200, {"Content-Type" => "application/json"}, [BrowserID::Identity.new.to_json] ]
         when config.whoami_path
+          current_user = get_user(env)
           [
             200,
             {"Content-Type" => "text/html"},
@@ -36,7 +37,7 @@ module BrowserID
       end
     end
 
-    def current_user(env)
+    def get_user(env)
       eval config.whoami
     end
 

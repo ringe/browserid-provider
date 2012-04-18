@@ -32,7 +32,7 @@ class MyTest < Test::Unit::TestCase
   end
 
   def test_get_whoami
-    BrowserID::Provider.current_user.stub(:email => "a@b.com")
+    BrowserID::Provider.current_user.stubs(:email).returns("a@b.com")
     get BrowserID::Config.new.whoami_path
     assert last_response.ok?
   end

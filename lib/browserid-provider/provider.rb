@@ -36,14 +36,14 @@ module BrowserID
       end
     end
 
+    def current_user(env)
+      eval config.whoami
+    end
+
     private
 
     def not_found
       [404, {"Content-Type" => "text/html"}, BrowserID::Template.render("404")]
-    end
-
-    def current_user
-      eval config.whoami
     end
   end
 end

@@ -1,5 +1,3 @@
 module BrowserID
-  module Provider
-    VERSION = "0.0.16"
-  end
+  VERSION = "0.0.16"
 end

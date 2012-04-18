@@ -16,7 +16,7 @@ module BrowserID
     attr_accessor :config
 
     def initialize(app = nil, options = {})
-      @app, config = app, BrowserID::Config.new(options)
+      @app, @config = app, BrowserID::Config.new(options)
     end
 
     # Rack enabled!
@@ -24,7 +24,7 @@ module BrowserID
       @path = env["PATH_INFO"]
 
       # Return Not found or send call back to middleware stack unless the URL is captured here
-      return (@app ? @app.call(env) : not_found) unless config.urls.include? @path
+      return (@app ? @app.call(env) : not_found) unless @config.urls.include? @path
 
       debugger
 

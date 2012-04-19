@@ -8,6 +8,8 @@ require "ruby-debug"
 require "thin"
 require "warden"
 
+use Warden
+
 class MyTest < Test::Unit::TestCase
   include Rack::Test::Methods
 

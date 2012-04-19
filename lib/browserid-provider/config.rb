@@ -8,29 +8,38 @@ module BrowserID
   # certify_path              What path to deliver certifying from
   #                           defaults to: "/browserid/certify"
   # whoami_path               What path to serve user credentials at
-  #                           defaults to: "/whoami"
+  #                           defaults to: "/browserid/whoami"
   #
-  # whoami                    What function to call for user info
-  #                           defaults to: "env['warden'].user"
+  # whoami                    What function to call for the current user object (must respond to :email method)
+  #                           defaults to: "@env['warden'].user"
   #
   # private_key_path          Where is the BrowserID OpenSSL private key located
   #                           defaults to: "config/browserid_provider.pem"
+  #
   # The "/.well-known/browserid" path is required from the BrowserID spec and used here.
+  #
+  # browserid_url             Which BrowserID server to use, ca be one of the following:
+  #                           * dev.diresworb.org for development (default)
+  #                           * diresworb.org     for beta
+  #                           * browserid.org     for production
+  #
+  # server_name               The domain name we are providing BrowserID for (default to example.org)
   #
   class Config < Hash
     # Creates an accessor that simply sets and reads a key in the hash:
     #
     #   class Config < Hash
-    #     hash_accessor :failure_app
+    #     hash_accessor :login_path
     #   end
     #
     #   config = Config.new
-    #   config.failure_app = Foo
-    #   config[:failure_app] #=> Foo
+    #   config.login_path = "/users/sign_in"
+    #   config[:login_path] #=> "/users/sign_in"
     #
-    #   config[:failure_app] = Bar
-    #   config.failure_app #=> Bar
+    #   config[:login_path] = "/login"
+    #   config.login_path #=> "/login"
     #
+    # Thanks to Warden. :)
     def self.hash_accessor(*names) #:nodoc:
       names.each do |name|
         class_eval <<-METHOD, __FILE__, __LINE__ + 1
@@ -45,16 +54,18 @@ module BrowserID
       end
     end
 
-    hash_accessor :login_path, :provision_path, :whoami, :whoami_path, :certify_path, :private_key_path
+    hash_accessor :login_path, :provision_path, :whoami, :whoami_path, :certify_path, :private_key_path, :browserid_url, :server_name
 
     def initialize(other={})
       merge!(other)
       self[:login_path]       ||= "/users/sign_in"
       self[:provision_path]   ||= "/browserid/provision"
       self[:certify_path]     ||= "/browserid/certify"
-      self[:whoami_path]      ||= "/whoami"
-      self[:whoami]           ||= "env['warden'].user"
+      self[:whoami_path]      ||= "/browserid/whoami"
+      self[:whoami]           ||= "@env['warden'].user"
       self[:private_key_path] ||= "config/browserid_provider.gem"
+      self[:browserid_url]    ||= "dev.diresworb.org"
+      self[:server_name]      ||= "example.org"
     end
 
     def urls
@@ -63,4 +74,3 @@ module BrowserID
 
   end
 end
-

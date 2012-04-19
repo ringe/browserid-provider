@@ -1,4 +1,5 @@
 require "openssl"
+require "json/jwt"
 
 module BrowserID
   class Identity

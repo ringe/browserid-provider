@@ -3,9 +3,18 @@ module BrowserID
   class Template
     PATH = File.expand_path(File.join(File.dirname(__FILE__), "../..", "app", "assets", "browserid"))
 
-    def self.render(template)
-      template = ERB.new File.read(PATH + "/404.html.erb")
-      [template.result]
+    def initialize(env)
+      @env = env
+    end
+
+    def get_binding
+      binding
+    end
+
+    def self.render(template, env)
+      rhtml = ERB.new File.read(PATH + "/" + template + ".html.erb")
+      view = BrowserID::Template.new(env)
+      [rhtml.result(view.get_binding)]
     end
 
     def self.css_styles

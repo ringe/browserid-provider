@@ -3,11 +3,11 @@ module BrowserID
   # authentication_path       Where to redirect users for login
   #                           defaults to: "/users/sign_in" (Devise default)
   #
-  # provision_path            What path to deliver provisioning from
+  # provision_path            What HTTP path to deliver provisioning from
   #                           defaults to: "/browserid/provision"
-  # certify_path              What path to deliver certifying from
+  # certify_path              What HTTP path to deliver certifying from
   #                           defaults to: "/browserid/certify"
-  # whoami_path               What path to serve user credentials at
+  # whoami_path               What HTTP path to serve user credentials at
   #                           defaults to: "/browserid/whoami"
   #
   # whoami                    What function to call for the current user object (must respond to :email method)
@@ -69,7 +69,7 @@ module BrowserID
     end
 
     def urls
-      [ self[:login_path], self[:provision_path], self[:certify_path], self[:whoami_path], self[:whoami], self[:private_key_path], "/.well-known/browserid" ]
+      [ self[:provision_path], self[:certify_path], self[:whoami_path], "/.well-known/browserid" ]
     end
 
   end

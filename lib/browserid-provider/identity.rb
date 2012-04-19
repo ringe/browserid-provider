@@ -36,17 +36,9 @@ module BrowserID
     def to_json
       {
         "public-key" => { "algorithm"=> "RS", "n" => public_key.n.to_s, "e" => public_key.e.to_s },
-        "authentication" => authentication_path,
-        "provisioning" => provision_path
+        "authentication" => @config.login_path,
+        "provisioning" => @config.provision_path
       }.to_json
-    end
-
-    def authentication_path
-      "/users/sign_in"
-    end
-
-    def provision_path
-      "/provision"
     end
   end
 end

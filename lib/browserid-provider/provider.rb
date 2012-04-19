@@ -49,6 +49,7 @@ module BrowserID
     def certify
       email = current_user_email
       return err "No user is logged in." unless email
+      debugger
       return err "Missing a required parameter (duration, pubkey)" if @req.params.keys.sort != ["duration", "pubkey"]
 
       bi = BrowserID::Identity.new

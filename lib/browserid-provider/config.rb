@@ -63,7 +63,7 @@ module BrowserID
       self[:certify_path]     ||= "/browserid/certify"
       self[:whoami_path]      ||= "/browserid/whoami"
       self[:whoami]           ||= "@env['warden'].user"
-      self[:private_key_path] ||= "config/browserid_provider.gem"
+      self[:private_key_path] ||= "config/browserid_provider.pem"
       self[:browserid_url]    ||= "dev.diresworb.org"
       self[:server_name]      ||= "example.org"
     end

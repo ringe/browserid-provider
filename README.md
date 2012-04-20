@@ -31,6 +31,7 @@ The default setup relies on Warden to see which user is logged in. This
 can easily be customized to fit any middleware function.
 
 The available configuration options are the following:
+
 ```ruby
   #
   # authentication_path       Where to redirect users for login
@@ -58,6 +59,26 @@ The available configuration options are the following:
   #
   # server_name               The domain name we are providing BrowserID for (default to example.org)
   #
+```
+
+The client side is JavaScript enabled. For Rails use:
+
+```erb
+    <%= browserid_authentication_tag %>
+    <!-- Enable BrowserID authentication API on the form #new_user -->
+    <%= enable_browserid_javascript_tag "new_user" %>
+```
+
+In your login form, add a cancel button like this:
+
+```erb
+  <%= button_to_function "Cancel", "navigator.id.cancelAuthentication()" %>
+```
+
+Without Rails view helpers, you can do:
+
+```javascript
+  $('form#new_user').bind('ajax:success', function(data, status, xhr) { navigator.id.completeAuthentication() })
 ```
 
 ## Contributing

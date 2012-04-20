@@ -49,14 +49,16 @@ module BrowserID
     def certify
       email = current_user_email
       return err "No user is logged in." unless email
-      debugger
-      return err "Missing a required parameter (duration, pubkey)" if @req.params.keys.sort != ["duration", "pubkey"]
+debugger
+      # Get params from Rails' ActionDispatch or from Rack Request
+      params = env["action_dispatch.request.request_parameters"] ? env["action_dispatch.request.request_parameters"] : @req.params
+      return err "Missing a required parameter (duration, pubkey)" if params.keys.sort != ["duration", "pubkey"]
 
       bi = BrowserID::Identity.new
-      expiration = (Time.now.strftime("%s").to_i + @req.params["duration"].to_i) * 1000
+      expiration = (Time.now.strftime("%s").to_i + params["duration"].to_i) * 1000
       issue = { "iss" => @config.server_name,
         "exp" => expiration,
-        "public-key" => @req.params["pubkey"],
+        "public-key" => params["pubkey"],
         "principal" => { "email"=> email }
       }
       jwt = JSON::JWT.new(issue)

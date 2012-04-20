@@ -75,7 +75,7 @@ In your login form, add a cancel button like this:
   <%= button_to_function "Cancel", "navigator.id.cancelAuthentication()" %>
 ```
 
-Without Rails view helpers, you can do:
+Without Rails view helpers (in any framework), you can do:
 
 ```javascript
   $('form#new_user').bind('ajax:success', function(data, status, xhr) { navigator.id.completeAuthentication() })

@@ -7,15 +7,17 @@ module BrowserID
   #   GET  /browserid/whoami
   #   POST /browserid/certify
   class Provider
-    attr_accessor :config, :env, :req
+    attr_accessor :config, :env, :req, :identity
 
     def initialize(app = nil, options = {})
       @app, @config = app, BrowserID::Config.new(options)
+      @identity = BrowserID::Identity.new
     end
 
     # Rack enabled!
     def call(env)
       @env, @path = env, env["PATH_INFO"], @req = Rack::Request.new(env)
+      env['browserid'] = @config
 
       # Return Not found or send call back to middleware stack unless the URL is captured here
       return (@app ? @app.call(env) : not_found) unless @config.urls.include? @path
@@ -35,7 +37,7 @@ module BrowserID
 
     private
     def well_known_browserid
-      [ 200, {"Content-Type" => "application/json"}, [BrowserID::Identity.new.to_json] ]
+      [ 200, {"Content-Type" => "application/json"}, [@identity.to_json] ]
     end
 
     def whoami
@@ -69,7 +71,6 @@ module BrowserID
       params = env["action_dispatch.request.request_parameters"] ? env["action_dispatch.request.request_parameters"] : @req.params
       return err "Missing a required parameter (duration, pubkey)" if params.keys.sort != ["duration", "pubkey"]
 
-      bi = BrowserID::Identity.new
       expiration = (Time.now.strftime("%s").to_i + params["duration"].to_i) * 1000
       issue = { "iss" => @config.server_name,
         "exp" => expiration,
@@ -77,7 +78,7 @@ module BrowserID
         "principal" => { "email"=> email }
       }
       jwt = JSON::JWT.new(issue)
-      jws = jwt.sign(bi.private_key, :RS256)
+      jws = jwt.sign(@identity.private_key, :RS256)
 
       return [ 200, {"Content-Type" => "application/json"}, [{ "cert" => jws.to_s }.to_json] ]
     end

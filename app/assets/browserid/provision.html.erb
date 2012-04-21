@@ -2,7 +2,7 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
-<script type="text/javascript" src="https://<%= @env[:browserid_url] %>/provisioning_api.js"></script>
+<script type="text/javascript" src="https://<%= @vars[:browserid_url] %>/provisioning_api.js"></script>
 <script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
 <script type="text/javascript">
   // an alias
@@ -13,9 +13,9 @@
   navigator.id.beginProvisioning(function(email, cert_duration) {
     // now we have the email address that wishes to be provisioned!
     // is he authenticated to underpin.no?
-    $.get('<%= @env[:whoami_path] %>')
+    $.get('<%= @vars[:whoami_path] %>')
       .success(function(r) {
-        email = email.replace('@<%= @env[:server_name] %>', '').toLowerCase();
+        email = email.replace('@<%= @vars[:domain_name] %>', '').toLowerCase();
         if (email != r.user) {
           return fail('user is not authenticated as target user');
         }
@@ -26,7 +26,7 @@
           // finally, once we have a public key from the browser, we'll certify it, and
           // go pass it back
           $.ajax({
-            url: '<%= @env[:certify_path] %>',
+            url: '<%= @vars[:certify_path] %>',
             data: JSON.stringify({
               pubkey: pubkey,
               duration: cert_duration

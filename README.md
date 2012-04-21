@@ -24,7 +24,7 @@ Or install it yourself as:
 In you Rails app config/application.rb, add:
 
 ```ruby
-  config.middleware.use BrowserID::Provider({:authentication_path => "/login" })
+  config.middleware.use BrowserID::Provider, :server_name => "example.org", :delegates => ["example.com"]
 ```
 
 The default setup relies on Warden to see which user is logged in. This
@@ -32,34 +32,44 @@ can easily be customized to fit any middleware function.
 
 The available configuration options are the following:
 
-```ruby
-  #
-  # authentication_path       Where to redirect users for login
-  #                           defaults to: "/users/sign_in" (Devise default)
-  #
-  # provision_path            What HTTP path to deliver provisioning from
-  #                           defaults to: "/browserid/provision"
-  # certify_path              What HTTP path to deliver certifying from
-  #                           defaults to: "/browserid/certify"
-  # whoami_path               What HTTP path to serve user credentials at
-  #                           defaults to: "/browserid/whoami"
-  #
-  # whoami                    What function to call for the current user object (must respond to :email method)
-  #                           defaults to: "@env['warden'].user"
-  #
-  # private_key_path          Where is the BrowserID OpenSSL private key located
-  #                           defaults to: "config/browserid_provider.pem"
-  #
-  # The "/.well-known/browserid" path is required from the BrowserID spec and used here.
-  #
-  # browserid_url             Which BrowserID server to use, ca be one of the following:
-  #                           * dev.diresworb.org for development (default)
-  #                           * diresworb.org     for beta
-  #                           * browserid.org     for production
-  #
-  # server_name               The domain name we are providing BrowserID for (default to example.org)
-  #
-```
+> authentication_path 
+> > Where to redirect users for login
+> > defaults to: "/users/sign_in" (Devise default)
+> 
+> provision_path
+> > What HTTP path to deliver provisioning from
+> > defaults to: "/browserid/provision"
+> certify_path
+> > What HTTP path to deliver certifying from
+> > defaults to: "/browserid/certify"
+> whoami_path
+> > What HTTP path to serve user credentials at
+> > defaults to: "/browserid/whoami"
+>
+> whoami
+> > Name of the middleware to get the current user object from (:user must respond to :email method)
+> > This middleware will be called as follows: env['warden'].user.email
+> > defaults to: "warden"
+> 
+> private_key_path
+> > Where is the BrowserID OpenSSL private key located
+> > defaults to: "config/browserid_provider.pem"
+> 
+> The "/.well-known/browserid" path is required from the BrowserID spec and used here.
+> 
+> browserid_url
+> > Which BrowserID server to use, ca be one of the following:
+> > * dev.diresworb.org for development (default)
+> > * diresworb.org     for beta
+> > * browserid.org     for production
+> 
+> server_name
+> > The domain name we are providing BrowserID for (default to example.org)
+> 
+> delegates
+> > An array of strings representing [authority delegates] [1]
+
+[1]: https://wiki.mozilla.org/Identity/BrowserID#BrowserID_Delegated_Support_Document "Mozilla Identity Wiki"
 
 The client side is JavaScript enabled. For Rails use:
 

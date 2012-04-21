@@ -72,7 +72,7 @@ module BrowserID
       return err "Missing a required parameter (duration, pubkey)" if params.keys.sort != ["duration", "pubkey"]
 
       expiration = (Time.now.strftime("%s").to_i + params["duration"].to_i) * 1000
-      issue = { "iss" => @config.server_name,
+      issue = { "iss" => issuer(email),
         "exp" => expiration,
         "public-key" => params["pubkey"],
         "principal" => { "email"=> email }
@@ -90,21 +90,28 @@ module BrowserID
 
     # Return the provision iframe content.
     def provision
-      [200, {"Content-Type" => "text/html"}, BrowserID::Template.render("provision", @config)]
+      email = current_user_email
+      template_vars = @config.merge( { :domain_name => issuer(email) } )
+      [200, {"Content-Type" => "text/html"}, BrowserID::Template.render("provision", template_vars)]
     end
 
     # This middleware doesn't find what you are looking for.
     def not_found
-      [404, {"Content-Type" => "text/html"}, BrowserID::Template.render("404", @env)]
+      [404, {"Content-Type" => "text/html"}, BrowserID::Template.render("404", nil)]
+    end
+
+    # Return the issuing domain name
+    def issuer(email)
+      @config.get_issuer(email ? email.sub(/.*@/,'') : nil)
     end
 
     # Return the email of the user logged in currently, or nil
     def current_user_email
       begin
-        current_user = eval config.whoami
+        current_user = @env[config.whoami].user
         current_user ? current_user.email : nil
       rescue NoMethodError
-        raise NoMethodError, "The function provided in BrowserID::Config.whoami doesn't exist."
+        raise NoMethodError, "The middleware provided in BrowserID::Config.whoami doesn't have a :user method, or the :user doesn't have the :email method."
       end
     end
   end

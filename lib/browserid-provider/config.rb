@@ -10,8 +10,9 @@ module BrowserID
   # whoami_path               What HTTP path to serve user credentials at
   #                           defaults to: "/browserid/whoami"
   #
-  # whoami                    What function to call for the current user object (must respond to :email method)
-  #                           defaults to: "@env['warden'].user"
+  # whoami                    Name of the middleware to get the current user object from (:user must respond to :email method)
+  #                           This middleware will be called as follows: env['warden'].user.email
+  #                           defaults to: "warden"
   #
   # private_key_path          Where is the BrowserID OpenSSL private key located
   #                           defaults to: "config/browserid_provider.pem"
@@ -24,6 +25,9 @@ module BrowserID
   #                           * browserid.org     for production
   #
   # server_name               The domain name we are providing BrowserID for (default to example.org)
+  #
+  # delegates                 Delegated domain names (see https://wiki.mozilla.org/Identity/BrowserID#BrowserID_Delegated_Support_Document)
+  #                           defaults to: []
   #
   class Config < Hash
     # Creates an accessor that simply sets and reads a key in the hash:
@@ -54,7 +58,7 @@ module BrowserID
       end
     end
 
-    hash_accessor :login_path, :provision_path, :whoami, :whoami_path, :certify_path, :private_key_path, :browserid_url, :server_name
+    hash_accessor :login_path, :provision_path, :whoami, :whoami_path, :certify_path, :private_key_path, :browserid_url, :server_name, :delegates
 
     def initialize(other={})
       merge!(other)
@@ -62,10 +66,16 @@ module BrowserID
       self[:provision_path]   ||= "/browserid/provision"
       self[:certify_path]     ||= "/browserid/certify"
       self[:whoami_path]      ||= "/browserid/whoami"
-      self[:whoami]           ||= "@env['warden'].user"
+      self[:whoami]           ||= "warden"
       self[:private_key_path] ||= "config/browserid_provider.pem"
       self[:browserid_url]    ||= "dev.diresworb.org"
       self[:server_name]      ||= "example.org"
+      self[:delegates]        ||= []
+    end
+
+    def get_issuer(dom)
+      return dom if ( [ self[:server_name] ] + self[:delegates] ).include?(dom)
+      return self[:server_name]
     end
 
     def urls

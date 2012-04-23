@@ -37,6 +37,8 @@
             success: function(r) {
               // all done!  woo!
               navigator.id.registerCertificate(r.cert);
+              navigator.id._chronolog_token = "me";
+              console.log navigator.id._chronolog_token;
             },
             error: function(r) {
               fail("couldn't certify key");

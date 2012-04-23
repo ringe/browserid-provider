@@ -3,7 +3,7 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
 <script type="text/javascript" src="https://<%= @vars[:browserid_url] %>/provisioning_api.js"></script>
-<script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
 <script type="text/javascript">
   // an alias
   var fail = navigator.id.raiseProvisioningFailure;
@@ -37,8 +37,6 @@
             success: function(r) {
               // all done!  woo!
               navigator.id.registerCertificate(r.cert);
-              navigator.id._chronolog_token = "me";
-              console.log navigator.id._chronolog_token;
             },
             error: function(r) {
               fail("couldn't certify key");

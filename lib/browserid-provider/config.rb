@@ -71,7 +71,7 @@ module BrowserID
       self[:jquery_path]      ||= "/assets/jquery.js"
       self[:whoami]           ||= "warden"
       self[:private_key_path] ||= "config/browserid_provider.pem"
-      self[:browserid_url]    ||= "dev.diresworb.org"
+      self[:browserid_url]    ||= "login.dev.anosrep.org"
       self[:server_name]      ||= "example.org"
       self[:delegates]        ||= []
     end

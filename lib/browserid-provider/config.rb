@@ -9,6 +9,8 @@ module BrowserID
   #                           defaults to: "/browserid/certify"
   # whoami_path               What HTTP path to serve user credentials at
   #                           defaults to: "/browserid/whoami"
+  # jquery_path               What HTTP path JQuery is served at
+  #                           defaults to: "/assets/jquery.js"
   #
   # whoami                    Name of the middleware to get the current user object from (:user must respond to :email method)
   #                           This middleware will be called as follows: env['warden'].user.email
@@ -66,6 +68,7 @@ module BrowserID
       self[:provision_path]   ||= "/browserid/provision"
       self[:certify_path]     ||= "/browserid/certify"
       self[:whoami_path]      ||= "/browserid/whoami"
+      self[:jquery_path]      ||= "/assets/jquery.js"
       self[:whoami]           ||= "warden"
       self[:private_key_path] ||= "config/browserid_provider.pem"
       self[:browserid_url]    ||= "dev.diresworb.org"

@@ -10,7 +10,23 @@ module BrowserId
 
     # JavaScript enable BrowserID authentication for the form with the given #id
     def enable_browserid_javascript_tag(id)
-      raw "<script type='text/javascript'>$('form##{id}').bind('ajax:success', function(data, status, xhr) { navigator.id.completeAuthentication() })</script>"
+      raw <<EOF
+        <script type='text/javascript'>
+          (function() {
+            function fail() {
+              var msg = 'user is not authenticated as target user';
+              navigator.id.raiseAuthenticationFailure(msg);
+            };
+
+            $('form##{id}').bind('ajax:success', function(data, status, xhr) { navigator.id.completeAuthentication() })
+            $('form##{id}').bind('ajax:error', function(data, status, xhr) { fail(); })
+
+            navigator.id.beginAuthentication(function(email) {
+              $('form##{id} #user_email').val(email);
+            });
+          }());
+        </script>
+EOF
     end
 
     # The URL to the BrowserID official JavaScript

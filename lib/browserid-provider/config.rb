@@ -24,7 +24,7 @@ module BrowserID
   # browserid_url             Which BrowserID server to use, ca be one of the following:
   #                           * login.dev.anosrep.org for development (default)
   #                           * login.anosrep.org     for beta
-  #                           * browserid.org         for production
+  #                           * login.persona.org     for production
   #
   # server_name               The domain name we are providing BrowserID for (default to example.org)
   #

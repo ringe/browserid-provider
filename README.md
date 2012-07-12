@@ -45,6 +45,9 @@ The available configuration options are the following:
 > whoami_path
 > > What HTTP path to serve user credentials at
 > > defaults to: "/browserid/whoami"
+> jquery_path
+> > What HTTP path JQuery is served at
+> > defaults to: "/assets/jquery.js"
 >
 > whoami
 > > Name of the middleware to get the current user object from (:user must respond to :email method)
@@ -59,9 +62,9 @@ The available configuration options are the following:
 > 
 > browserid_url
 > > Which BrowserID server to use, ca be one of the following:
-> > * dev.diresworb.org for development (default)
-> > * diresworb.org     for beta
-> > * browserid.org     for production
+> > * login.dev.anosrep.org for development (default)
+> > * login.anosrep.org     for beta
+> > * login.persona.org     for production
 > 
 > server_name
 > > The domain name we are providing BrowserID for (default to example.org)

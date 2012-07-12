@@ -15,6 +15,7 @@
     // is he authenticated to underpin.no?
     $.get('<%= @vars[:whoami_path] %>')
       .success(function(r) {
+        console.log(r);
         email = email.replace('@<%= @vars[:domain_name] %>', '').toLowerCase();
         if (email != r.user) {
           return fail('user is not authenticated as target user');
@@ -36,6 +37,7 @@
             dataType: 'json',
             success: function(r) {
               // all done!  woo!
+              console.log(r);
               navigator.id.registerCertificate(r.cert);
             },
             error: function(r) {

@@ -22,9 +22,9 @@ module BrowserID
   # The "/.well-known/browserid" path is required from the BrowserID spec and used here.
   #
   # browserid_url             Which BrowserID server to use, ca be one of the following:
-  #                           * dev.diresworb.org for development (default)
-  #                           * diresworb.org     for beta
-  #                           * browserid.org     for production
+  #                           * login.dev.anosrep.org for development (default)
+  #                           * login.anosrep.org     for beta
+  #                           * browserid.org         for production
   #
   # server_name               The domain name we are providing BrowserID for (default to example.org)
   #

@@ -72,15 +72,25 @@ module BrowserID
       return err "Missing a required parameter (duration, pubkey)" if params.keys.sort != ["duration", "pubkey"]
 
       expiration = (Time.now.strftime("%s").to_i + params["duration"].to_i) * 1000
-      issue = { "iss" => issuer(email),
-        "exp" => expiration,
-        "public-key" => params["pubkey"],
-        "principal" => { "email"=> email }
+
+      # Old certificate structure, changed to fit with https://github.com/mozilla/browserid-certifier/blob/master/bin/certifier#L51
+#      issue = {
+#        "principal" => { "email"=> email }
+#        "hostname" => issuer(email),
+#        "exp" => expiration,
+#        "public-key" => params["pubkey"],
+#      }
+      issue = {
+        "email"=> email,
+        "pubkey" => params["pubkey"],
+        "duration" => expiration,
+        "hostname" => issuer(email)
       }
+
       jwt = JSON::JWT.new(issue)
       jws = jwt.sign(@identity.private_key, :RS256)
 
-      return [ 200, {"Content-Type" => "application/json"}, [{ "cert" => jws.to_s }.to_json] ]
+      return [ 200, {"Content-Type" => "application/json"}, [{"success" => true, "cert" => jws.to_s }.to_json] ]
     end
 
     # Something went wrong.

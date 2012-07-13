@@ -80,13 +80,18 @@ module BrowserID
 #        "exp" => expiration,
 #        "public-key" => params["pubkey"],
 #      }
+#      issue = {
+#        "email"=> email,
+#        "pubkey" => params["pubkey"],
+#        "duration" => expiration,
+#        "hostname" => issuer(email)
+#      }
       issue = {
-        "email"=> email,
-        "pubkey" => params["pubkey"],
-        "duration" => expiration,
-        "hostname" => issuer(email)
+        "iss" => issuer(email),
+        "exp" => expiration,
+        "public-key" => JSON.parse(params["pubkey"]),
+        "principal" => { "email"=> email }
       }
-
       jwt = JSON::JWT.new(issue)
       jws = jwt.sign(@identity.private_key, :RS256)
 

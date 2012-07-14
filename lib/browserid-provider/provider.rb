@@ -63,6 +63,18 @@ module BrowserID
     #
     # We're going to certify that public key for the currently logged in user.
     #
+    # The resulting data has to be a JSON object with the following document structure:
+    #
+    #   {
+    #     "iss": "example.com",
+    #     "exp": "1313971280961",
+    #     "public-key": "pubkey" data from the request (see above)
+    #     "principal": {
+    #       "email": "john@example.com"
+    #     }
+    #   }
+    #
+    # See https://github.com/mozilla/id-specs/blob/prod/browserid/index.md#identity-certificate for further reference.
     def certify
       email = current_user_email
       return err "No user is logged in." unless email
@@ -73,25 +85,13 @@ module BrowserID
 
       expiration = (Time.now.strftime("%s").to_i + params["duration"].to_i) * 1000
 
-      # Old certificate structure, changed to fit with https://github.com/mozilla/browserid-certifier/blob/master/bin/certifier#L51
-#      issue = {
-#        "principal" => { "email"=> email }
-#        "hostname" => issuer(email),
-#        "exp" => expiration,
-#        "public-key" => params["pubkey"],
-#      }
-#      issue = {
-#        "email"=> email,
-#        "pubkey" => params["pubkey"],
-#        "duration" => expiration,
-#        "hostname" => issuer(email)
-#      }
       issue = {
         "iss" => issuer(email),
         "exp" => expiration,
         "public-key" => JSON.parse(params["pubkey"]),
         "principal" => { "email"=> email }
       }
+
       jwt = JSON::JWT.new(issue)
       jws = jwt.sign(@identity.private_key, :RS256)
 

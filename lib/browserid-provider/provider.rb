@@ -88,6 +88,7 @@ module BrowserID
       issue = {
         "iss" => issuer(email),
         "exp" => expiration,
+        "iat" => (Time.now.strftime("%s").to_i) * 1000,
         "public-key" => JSON.parse(params["pubkey"]),
         "principal" => { "email"=> email }
       }

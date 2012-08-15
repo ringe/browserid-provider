@@ -5,6 +5,9 @@ Become a Mozilla BrowserID Primary Identity Provider.
 This is a Rack middleware for providing the BrowserID Primary Identity
 service. I have so far tested this only with Ruby on Rails.
 
+[![Code Climate](https://codeclimate.com/badge.png)](https://codeclimate.com/github/ringe/browserid-provider)
+[![Build Status](https://secure.travis-ci.org/ringe/browserid-provider.png)](http://travis-ci.org/ringe/browserid-provider)
+
 ## Installation
 
 Add this line to your application's Gemfile:
